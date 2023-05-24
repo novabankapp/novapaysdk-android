@@ -35,8 +35,9 @@ android {
         kotlinCompilerExtensionVersion '1.2.0'
     }
 }
-def koin_version = '2.1.6'
+def koin_version = '3.4.0'
 def life_cycle = "2.3.1"
+def nav_version = "2.5.1"
 dependencies {
 
     implementation project(":sdk")
@@ -46,8 +47,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$life_cycle"
 
     implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-viewmodel:$koin_version"
-    implementation "io.insert-koin:koin-androidx-scope:$koin_version"
+    implementation "io.insert-koin:koin-androidx-viewmodel:2.2.3"
+    implementation "io.insert-koin:koin-androidx-scope:2.2.3"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+    implementation "io.insert-koin:koin-android-compat:$koin_version"
+
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'androidx.activity:activity-compose:1.3.1'
@@ -57,10 +62,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+
 }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import java.math.BigDecimal
 
-internal class TransactionViewModel (
+ class TransactionViewModel (
     private val protocol : NovaPayPlatformProtocol,
     private val apiKeyProvider: ApiKeyProvider
 ): BaseViewModel(), KoinComponent {
