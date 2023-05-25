@@ -7,15 +7,15 @@ object ApiKeyProvider {
 
     var apiKey = ""
         private set
-    var environment = SdkEnvironment.PRD
+    var environment = NovaPaySdkEnvironment.PRD
         private set
 
     fun getEnvironmentUrl() = environment.baseUrl
 
-    fun set(apiKey: String, environment: SdkEnvironment) {
+    fun set(apiKey: String, environment: NovaPaySdkEnvironment) {
         this.apiKey = apiKey
         this.environment = environment
     }
 
-    fun isCurrentEnvironmentPrd() = environment == SdkEnvironment.PRD
+    fun isCurrentEnvironmentPrd() = environment == NovaPaySdkEnvironment.PRD
 }

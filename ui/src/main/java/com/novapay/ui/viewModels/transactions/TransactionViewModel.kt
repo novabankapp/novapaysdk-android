@@ -10,7 +10,7 @@ import com.novapay.ui.states.transactions.TransactionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import java.math.BigDecimal
 
  class TransactionViewModel (

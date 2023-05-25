@@ -5,6 +5,7 @@ import com.novapay.sdk.domain.services.client.ClientKtorService
 import com.novapay.sdk.domain.services.client.ClientRemote
 import com.novapay.sdk.domain.interceptors.AuthInterceptor
 import com.novapay.sdk.domain.remote.ktor.KtorClient
+import com.novapay.sdk.domain.remote.ktor.mock.KtorMockClient
 import com.novapay.sdk.domain.repositories.clients.ClientRepository
 import com.novapay.sdk.domain.repositories.clients.ClientRepositoryImpl
 import com.novapay.sdk.domain.repositories.merchants.MerchantRepository
@@ -23,7 +24,7 @@ import org.koin.dsl.module
 internal val applicationModule = module {
     single { Preferences(context = androidContext()) }
     single { AuthInterceptor(get()) }
-    single { KtorClient.getClient(get())}
+    single { /*KtorClient.getClient(get())*/ KtorMockClient.ktorHttpClient}
     single{ ClientKtorService(get()) }
     single<ClientRemote>{ ClientKtorRemote(get()) }
     single{ TransactionsKtorService(get()) }

@@ -10,7 +10,7 @@ class TransactionState(
     val errorMessage : String? = "",
     var customerRef :  String = "",
     var amount: BigDecimal = BigDecimal.ZERO,
-    var metadata: Any? = null,
+    var metadata: Any? = "",
     var isGenerateTRNContentValid: Boolean = false,
     var trn: String? = null,
     var validatedCustomer: ValidatedCustomer? = null

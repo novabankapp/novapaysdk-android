@@ -1,29 +1,25 @@
 package com.novapay.novapaysdk
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.novapay.novapaysdk.ui.theme.NovaPaySdkTheme
+import com.novapay.ui.core.platform.novaPayUiSdk
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             NovaPaySdkTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
+                Greeting(name = "Lewis")
             }
         }
     }
@@ -31,7 +27,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+    val context = LocalContext.current
+    Button(onClick = {
+        novaPayUiSdk.startGenerateTRNFlow(context  as Activity,
+            onError = { Log.i("here", "error")},
+            onSuccess = { Log.i("here", "success")})
+    }) {
+        Text(text = "Hello $name!")
+    }
 }
 
 @Preview(showBackground = true)

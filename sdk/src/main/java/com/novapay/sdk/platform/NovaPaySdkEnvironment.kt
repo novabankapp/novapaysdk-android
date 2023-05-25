@@ -2,7 +2,7 @@ package com.novapay.sdk.platform
 
 import java.util.*
 
-enum class SdkEnvironment(val baseUrl: String) {
+enum class NovaPaySdkEnvironment(val baseUrl: String) {
 
     TST("https://api.sbx.aptopayments.com"),
     PRD("https://api.aptopayments.com");

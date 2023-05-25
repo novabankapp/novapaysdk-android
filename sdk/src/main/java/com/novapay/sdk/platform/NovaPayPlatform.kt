@@ -31,7 +31,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
         initKoin(application)
         AndroidThreeTen.init(application)
     }
-    suspend fun initializeWithApiKey(application: Application, apiKey: String, environment: SdkEnvironment = SdkEnvironment.PRD) {
+    suspend fun initializeWithApiKey(application: Application, apiKey: String, environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD) {
         initialize(application)
         setApiKey(apiKey, environment)
     }
@@ -49,7 +49,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
         var response = clientRepository.validateApiKey(apiKey)
         return response.success
     }
-    fun setApiKey(apiKey: String, environment: SdkEnvironment = SdkEnvironment.PRD) {
+    fun setApiKey(apiKey: String, environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD) {
         ApiKeyProvider.set(apiKey, environment)
     }
 

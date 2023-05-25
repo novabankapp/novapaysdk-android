@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".TransactionActivity"
+            android:name="com.novapay.ui.features.transactions.TransactionActivity"
             android:exported="false" />
     </application>
 

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
 }
 
 android {
@@ -40,18 +41,16 @@ def life_cycle = "2.3.1"
 def nav_version = "2.5.1"
 dependencies {
 
-    implementation project(":sdk")
+    implementation project(path: ':sdk')
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$life_cycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$life_cycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$life_cycle"
 
     implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-viewmodel:2.2.3"
-    implementation "io.insert-koin:koin-androidx-scope:2.2.3"
+    //implementation "io.insert-koin:koin-androidx-viewmodel:2.2.3"
     implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-    implementation "io.insert-koin:koin-android-compat:$koin_version"
 
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"

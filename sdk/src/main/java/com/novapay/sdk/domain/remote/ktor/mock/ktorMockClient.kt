@@ -25,7 +25,7 @@ class KtorMockClient {
                 }*/
                 addHandler { request ->
                     when (request.url.encodedPath) {
-                        "/Client/validate" -> {
+                        "/Clients/validate" -> {
                             val responseHeaders = headersOf("Content-Type"
                                     to listOf(ContentType.Application.Json.toString()))
 
@@ -43,7 +43,7 @@ class KtorMockClient {
 
                             respond(GenerateTRNMockResponse(), HttpStatusCode.OK, responseHeaders)
                         }
-                        "/Merchants/GetDetails" -> {
+                        "/Merchants/getDetails" -> {
                             val responseHeaders = headersOf("Content-Type"
                                     to listOf(ContentType.Application.Json.toString()))
 

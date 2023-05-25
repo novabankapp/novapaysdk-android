@@ -2,25 +2,23 @@ package com.novapay.ui.core.platform
 
 import android.app.Activity
 import android.app.Application
-import android.view.SurfaceControl.Transaction
 import com.novapay.sdk.exceptions.Failure
 import com.novapay.sdk.infrastructure.di.ExtraModule
 import com.novapay.sdk.platform.NovaPayPlatform
-import com.novapay.sdk.platform.SdkEnvironment
+import com.novapay.sdk.platform.NovaPaySdkEnvironment
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.novapay.ui.R
 import com.novapay.ui.di.applicationModule
 import com.novapay.ui.di.viewModelModule
 import com.novapay.ui.features.transactions.TransactionActivity
 import org.koin.core.module.Module
-import java.lang.ref.WeakReference
 
-interface uiSdkProtocol {
+interface NovaPayUiSdkProtocol {
 
     fun initializeWithApiKey(
         application: Application,
         apiKey: String,
-        environment: SdkEnvironment = SdkEnvironment.PRD,
+        environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD,
         extraModules: List<ExtraModule> = listOf()
     )
     fun startGenerateTRNFlow(
@@ -30,14 +28,14 @@ interface uiSdkProtocol {
     )
     fun initialize(application: Application, extraModules: List<ExtraModule> = listOf())
 
-    fun setApiKey(apiKey: String, environment: SdkEnvironment)
+    fun setApiKey(apiKey: String, environment: NovaPaySdkEnvironment)
 }
 
-object uiSdk : uiSdkProtocol{
+object novaPayUiSdk : NovaPayUiSdkProtocol{
     override fun initializeWithApiKey(
         application: Application,
         apiKey: String,
-        environment: SdkEnvironment,
+        environment: NovaPaySdkEnvironment,
         extraModules: List<ExtraModule>
     ) {
         initialize(application, extraModules)
@@ -60,7 +58,7 @@ object uiSdk : uiSdkProtocol{
     }
 
 
-    override fun setApiKey(apiKey: String, environment: SdkEnvironment) {
+    override fun setApiKey(apiKey: String, environment: NovaPaySdkEnvironment) {
         NovaPayPlatform.setApiKey(apiKey, environment)
     }
     private fun getModuleList(extraModules: List<ExtraModule>): MutableList<Module> {
