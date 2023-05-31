@@ -1,6 +1,7 @@
 package com.novapay.sdk.platform
 
 import android.app.Application
+import android.util.Log
 import androidx.annotation.RestrictTo
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.novapay.sdk.data.Merchant
@@ -81,6 +82,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
         amount: BigDecimal,
         metaData: Any?
     ): String? {
+        Log.d("generate on platform", "Within")
         val response = transactionsRepository.generateTRN(
             GenerateTRNRequest(
                 customerReference = customerReference,
@@ -88,6 +90,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
                 metaData = metaData,
                 serviceUniqueIdentifier = serviceUniqueIdentifier
             ))
+        Log.d("generate on platform", "$response")
         return response.trn
     }
     private val merchantRepository: MerchantRepository by lazy { koin.get() }

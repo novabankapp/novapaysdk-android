@@ -9,7 +9,7 @@ import io.ktor.http.*
 
 class ClientKtorService constructor(private val client: HttpClient) {
     suspend fun validateApiKey(apiKey: String): GeneralResult {
-        val res : HttpResponse = client.request("Clients/validate") {
+        val res : HttpResponse = client.request("Merchants/validate") {
             method = HttpMethod.Post
             headers {
                 append("Content-Type", "application/json")

@@ -1,5 +1,6 @@
 package com.novapay.ui.viewModels.transactions
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.novapay.sdk.data.Merchant
 import com.novapay.sdk.platform.ApiKeyProvider
@@ -30,6 +31,10 @@ import java.math.BigDecimal
     fun handleTransactionEvent(event: TransactionEvent) {
         _uiState.value = uiState.value.build {
             when (event) {
+                is TransactionEvent.LoadOptions -> {
+                    amount = event.options.amount
+                    customerRef = event.options.customerRef
+                }
                 is TransactionEvent.ChangeAmount -> {
                     amount = event.amount
                 }
@@ -40,7 +45,16 @@ import java.math.BigDecimal
                     metadata = event.metaData
                 }
                 TransactionEvent.Generate -> {
-                    generateTRN()
+                    loading = true
+                    errorMessage = null
+                    generateTRN(loadError = { err ->
+                        errorMessage = err
+                        loading = false
+                    }){ t ->
+                        loading = false
+                        errorMessage = null
+                        trn = t
+                    }
                 }
                 TransactionEvent.ValidateCustomerRef -> {
                     validateCustomerRef()
@@ -49,43 +63,38 @@ import java.math.BigDecimal
 
                 }
             }
-            _uiState.value = uiState.value.build {
-                isGenerateTRNContentValid = customerRef.trim().isNotEmpty() && !amount.equals(BigDecimal.ZERO)
-            }
+
+            Log.d("valid", (customerRef.trim().isNotEmpty() && amount != BigDecimal.ZERO).toString())
+            isGenerateTRNContentValid = customerRef.trim().isNotEmpty() && amount != BigDecimal.ZERO && amount != BigDecimal("0.00")
+
         }
     }
-    private fun generateTRN(){
-        _uiState.value = uiState.value.build {
-            loading = true
-            errorMessage = null
-        }
+    private fun generateTRN(loadError : (error: String) -> Unit, loadSuccess: (trn: String?) -> Unit){
+
+        Log.d("generate", "within ${_uiState.value.isLoading}")
         viewModelScope.launch {
             try {
+                Log.d("generate in scope", "Withing ${_uiState.value.isLoading}")
                 if(merchant != null) {
+                    Log.d("generate", "Merchant ${merchant}")
                     val res = protocol.generateTRN(
                          customerReference = _uiState.value.customerRef,
                          serviceUniqueIdentifier = merchant!!.uniqueIdentifier,
                          amount = _uiState.value.amount,
                          metaData = _uiState.value.metadata
                     )
-                    _uiState.value = uiState.value.build {
-                        loading = false
-                        errorMessage = null
-                        trn = res
-                    }
+                    Log.d("generate", "TRN ${res}")
+                    loadSuccess(res)
+                    Log.d("generate", "within ${uiState.value.isLoading}")
 
                 }
-                _uiState.value = uiState.value.build {
-                    loading = false
-                    errorMessage = "Merchant not loaded"
+                else {
+                    loadError("Merchant not loaded")
                 }
 
             }
             catch(ex : Exception){
-                _uiState.value = uiState.value.build {
-                    loading = false
-                    errorMessage = ex.message
-                }
+                loadError(ex.message.toString())
             }
         }
     }

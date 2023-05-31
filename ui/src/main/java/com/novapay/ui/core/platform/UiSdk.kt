@@ -2,6 +2,8 @@ package com.novapay.ui.core.platform
 
 import android.app.Activity
 import android.app.Application
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import com.novapay.sdk.exceptions.Failure
 import com.novapay.sdk.infrastructure.di.ExtraModule
 import com.novapay.sdk.platform.NovaPayPlatform
@@ -11,6 +13,7 @@ import com.novapay.ui.R
 import com.novapay.ui.di.applicationModule
 import com.novapay.ui.di.viewModelModule
 import com.novapay.ui.features.transactions.TransactionActivity
+import com.novapay.ui.models.transactions.TransactionActivityOptions
 import org.koin.core.module.Module
 
 interface NovaPayUiSdkProtocol {
@@ -23,6 +26,9 @@ interface NovaPayUiSdkProtocol {
     )
     fun startGenerateTRNFlow(
         from: Activity,
+        resultCode: Int? = null,
+        activityResultLauncher: ActivityResultLauncher<Intent>? = null,
+        options : TransactionActivityOptions? = null,
         onSuccess: (() -> Unit)?,
         onError: ((Failure) -> Unit)?
     )
@@ -44,10 +50,13 @@ object novaPayUiSdk : NovaPayUiSdkProtocol{
 
     override fun startGenerateTRNFlow(
         from: Activity,
+        resultCode: Int?,
+        activityResultLauncher: ActivityResultLauncher<Intent>?,
+        options : TransactionActivityOptions?,
         onSuccess: (() -> Unit)?,
         onError: ((Failure) -> Unit)?
     ) {
-        startFlow(from, onSuccess = onSuccess, onError = onError)
+        startFlow(from, onSuccess = onSuccess, onError = onError, options = options , resultCode =  resultCode, activityResultLauncher = activityResultLauncher)
     }
 
     override fun initialize(application: Application, extraModules: List<ExtraModule>) {
@@ -69,10 +78,20 @@ object novaPayUiSdk : NovaPayUiSdkProtocol{
     }
     private fun startFlow(
         from: Activity,
+        resultCode: Int?,
+        activityResultLauncher: ActivityResultLauncher<Intent>?,
+        options : TransactionActivityOptions?,
         onSuccess: (() -> Unit)?,
         onError: ((Failure) -> Unit)?
     ) {
-        from.startActivity(TransactionActivity.callingIntent(from))
+        if(resultCode != null)
+            from.startActivityForResult(TransactionActivity.callingIntent(from, options),resultCode )
+        else if(activityResultLauncher != null) {
+            val intent = TransactionActivity.callingIntent(from, options)
+            activityResultLauncher.launch(intent)
+        }
+        else
+            from.startActivity(TransactionActivity.callingIntent(from, options))
         from.overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         onSuccess?.invoke()
 

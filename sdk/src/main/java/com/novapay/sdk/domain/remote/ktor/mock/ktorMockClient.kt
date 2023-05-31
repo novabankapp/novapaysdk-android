@@ -1,5 +1,6 @@
 package com.novapay.sdk.domain.remote.ktor.mock
 
+import android.util.Log
 import com.novapay.sdk.domain.models.responses.ValidateCustomerResponse
 import com.novapay.sdk.domain.remote.ktor.mock.clients.ValidateMockResponse
 import com.novapay.sdk.domain.remote.ktor.mock.merchants.MerchantMockResponse
@@ -25,7 +26,7 @@ class KtorMockClient {
                 }*/
                 addHandler { request ->
                     when (request.url.encodedPath) {
-                        "/Clients/validate" -> {
+                        "/Merchants/validate" -> {
                             val responseHeaders = headersOf("Content-Type"
                                     to listOf(ContentType.Application.Json.toString()))
 
@@ -38,9 +39,10 @@ class KtorMockClient {
                             respond(ValidateCustomerMockResponse(), HttpStatusCode.OK, responseHeaders)
                         }
                         "/Transactions/GenerateTRN" -> {
+                            Log.d("generate on ktor mock", " a little Within")
                             val responseHeaders = headersOf("Content-Type"
                                     to listOf(ContentType.Application.Json.toString()))
-
+                            Log.d("generate on ktor mock", "Within")
                             respond(GenerateTRNMockResponse(), HttpStatusCode.OK, responseHeaders)
                         }
                         "/Merchants/getDetails" -> {

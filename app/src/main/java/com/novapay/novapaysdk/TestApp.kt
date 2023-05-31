@@ -12,6 +12,6 @@ class TestApp  : Application() {
 
     private fun initializeNovaSdk() {
 
-        novaPayUiSdk.initializeWithApiKey(this,"yyyyy", NovaPaySdkEnvironment.valueOf("TST"))
+        novaPayUiSdk.initializeWithApiKey(this,"yyyyy", NovaPaySdkEnvironment.fromString("TST"))
     }
 }

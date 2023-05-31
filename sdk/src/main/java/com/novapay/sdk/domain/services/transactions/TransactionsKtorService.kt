@@ -1,5 +1,6 @@
 package com.novapay.sdk.domain.services.transactions
 
+import android.util.Log
 import com.novapay.sdk.domain.models.requests.GenerateTRNRequest
 import com.novapay.sdk.domain.models.requests.ValidateCustomerRefRequest
 import com.novapay.sdk.domain.models.responses.GeneralResult
@@ -24,6 +25,8 @@ class TransactionsKtorService constructor(private val client: HttpClient) {
         return res.body()
     }
     suspend fun generateTRN(request: GenerateTRNRequest): GenerateTRNResponse {
+        Log.d("generate on ktor", "Within")
+
         val res : HttpResponse = client.request("Transactions/GenerateTRN") {
             method = HttpMethod.Post
             headers {
@@ -32,6 +35,7 @@ class TransactionsKtorService constructor(private val client: HttpClient) {
             setBody(request)
         }
         val status = res.status
+        Log.d("generate on ktor", "status $status")
         return res.body()
     }
 }
