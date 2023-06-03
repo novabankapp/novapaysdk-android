@@ -1,5 +1,6 @@
 package com.novapay.sdk.domain.remote.ktor.mock.transactions
 
+import android.util.Log
 import com.google.gson.Gson
 import com.novapay.sdk.domain.models.responses.GeneralResult
 import com.novapay.sdk.domain.models.responses.GenerateTRNResponse
@@ -11,6 +12,7 @@ object GenerateTRNMockResponse{
             result = true,
             trn = "1234"
         )
+        Log.d("in mock response", "uhuh")
         return Gson().toJson(obj)
     }
 }

@@ -31,7 +31,7 @@ android {
     }
 }
 def koin_version = '3.4.0'
-def ktor_version = "2.1.0"
+def ktor_version = "2.3.0"
 def okhttp_version = "4.10.0"
 def couroutine_version = "1.6.4"
 def datastore_version = "1.0.0"

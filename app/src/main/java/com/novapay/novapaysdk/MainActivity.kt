@@ -9,16 +9,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.novapay.novapaysdk.ui.theme.NovaPaySdkTheme
 import com.novapay.ui.core.platform.novaPayUiSdk
 import com.novapay.ui.models.transactions.TransactionActivityOptions
@@ -45,7 +52,7 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             NovaPaySdkTheme {
-                Greeting(name = "Lewis",
+                Greeting(name = "Jane Banda",
                     activityResultLauncher = activityResultLauncher)
             }
         }
@@ -62,7 +69,11 @@ fun Greeting(name: String,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
             Text(
                 "Student Details",
                 style = MaterialTheme.typography.h5.copy(
@@ -70,11 +81,28 @@ fun Greeting(name: String,
                     fontWeight = FontWeight.Bold
                 ),
             )
+            Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(data = "https://picsum.photos/200").apply(block = fun ImageRequest.Builder.() {
+                            crossfade(true)
+                        }).build()
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(128.dp)
+            )
             Text(
                 "Student Name: $name",
                 style = MaterialTheme.typography.caption.copy(
                     MaterialTheme.colors.onSurface,
                     fontWeight = FontWeight.Bold
+                ),
+            )
+            Text(
+                "A++ student passionate about nature and people. Dreams of studying Zoology",
+                style = MaterialTheme.typography.caption.copy(
+                    MaterialTheme.colors.onSurface,
+                    fontWeight = FontWeight.Light
                 ),
             )
             Text(
@@ -89,7 +117,7 @@ fun Greeting(name: String,
                     context as Activity,
                     onError = { Log.i("here", "error") },
                     onSuccess = { Log.i("here", "success") },
-                    options = TransactionActivityOptions("123455555", BigDecimal("0.00")),
+                    options = TransactionActivityOptions("123455555", BigDecimal("1200000.00")),
                     resultCode = null,
                     activityResultLauncher = activityResultLauncher
                 )

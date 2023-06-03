@@ -47,13 +47,9 @@ import java.math.BigDecimal
                 TransactionEvent.Generate -> {
                     loading = true
                     errorMessage = null
-                    generateTRN(loadError = { err ->
+                    generateTRN{ err ->
                         errorMessage = err
                         loading = false
-                    }){ t ->
-                        loading = false
-                        errorMessage = null
-                        trn = t
                     }
                 }
                 TransactionEvent.ValidateCustomerRef -> {
@@ -69,7 +65,7 @@ import java.math.BigDecimal
 
         }
     }
-    private fun generateTRN(loadError : (error: String) -> Unit, loadSuccess: (trn: String?) -> Unit){
+    private fun generateTRN(loadError : (error: String) -> Unit){
 
         Log.d("generate", "within ${_uiState.value.isLoading}")
         viewModelScope.launch {
@@ -84,7 +80,12 @@ import java.math.BigDecimal
                          metaData = _uiState.value.metadata
                     )
                     Log.d("generate", "TRN ${res}")
-                    loadSuccess(res)
+
+                    _uiState.value = uiState.value.build {
+                        loading = false
+                        trn = res
+                        errorMessage = null
+                    }
                     Log.d("generate", "within ${uiState.value.isLoading}")
 
                 }
@@ -94,7 +95,11 @@ import java.math.BigDecimal
 
             }
             catch(ex : Exception){
-                loadError(ex.message.toString())
+
+                _uiState.value = uiState.value.build {
+                    loading = false
+                    errorMessage = "Something went wrong"
+                }
             }
         }
     }
