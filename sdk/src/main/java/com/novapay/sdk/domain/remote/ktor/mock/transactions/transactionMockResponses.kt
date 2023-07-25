@@ -10,7 +10,8 @@ object GenerateTRNMockResponse{
     operator fun invoke(): String {
         var obj = GenerateTRNResponse(
             result = true,
-            trn = "1234"
+            trn = "1234",
+            qrCode = ""
         )
         Log.d("in mock response", "uhuh")
         return Gson().toJson(obj)

@@ -8,6 +8,7 @@ import com.novapay.sdk.data.Merchant
 import com.novapay.sdk.data.ValidatedCustomer
 import com.novapay.sdk.domain.models.requests.GenerateTRNRequest
 import com.novapay.sdk.domain.models.requests.ValidateCustomerRefRequest
+import com.novapay.sdk.domain.models.responses.GenerateTRNResponse
 import com.novapay.sdk.domain.repositories.clients.ClientRepository
 import com.novapay.sdk.domain.repositories.merchants.MerchantRepository
 import com.novapay.sdk.domain.repositories.transactions.TransactionsRepository
@@ -32,7 +33,9 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
         initKoin(application)
         AndroidThreeTen.init(application)
     }
-    suspend fun initializeWithApiKey(application: Application, apiKey: String, environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD) {
+    suspend fun initializeWithApiKey(application: Application,
+                                     apiKey: String,
+                                     environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD) {
         initialize(application)
         setApiKey(apiKey, environment)
     }
@@ -48,6 +51,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
     private val clientRepository: ClientRepository by lazy { koin.get() }
     override suspend fun validateApiKey(apiKey: String) : Boolean {
         var response = clientRepository.validateApiKey(apiKey)
+        ApiKeyProvider.setMerchant(response.merchant)
         return response.success
     }
     fun setApiKey(apiKey: String, environment: NovaPaySdkEnvironment = NovaPaySdkEnvironment.PRD) {
@@ -81,7 +85,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
         serviceUniqueIdentifier: String,
         amount: BigDecimal,
         metaData: Any?
-    ): String? {
+    ): GenerateTRNResponse? {
         Log.d("generate on platform", "Within")
         val response = transactionsRepository.generateTRN(
             GenerateTRNRequest(
@@ -91,7 +95,7 @@ object NovaPayPlatform : NovaPayPlatformProtocol {
                 serviceUniqueIdentifier = serviceUniqueIdentifier
             ))
         Log.d("generate on platform", "$response")
-        return response.trn
+        return response
     }
     private val merchantRepository: MerchantRepository by lazy { koin.get() }
     override suspend fun getMerchant(accessToken: String): Merchant? {

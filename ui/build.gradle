@@ -47,12 +47,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$life_cycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$life_cycle"
 
+    implementation "io.coil-kt:coil-compose:2.1.0"
+
     implementation "io.insert-koin:koin-android:$koin_version"
-    //implementation "io.insert-koin:koin-androidx-viewmodel:2.2.3"
     implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-
-
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'androidx.activity:activity-compose:1.3.1'
     implementation "androidx.compose.ui:ui:$compose_ui_version"

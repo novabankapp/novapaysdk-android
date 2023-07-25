@@ -2,6 +2,7 @@ package com.novapay.sdk.domain.remote.ktor
 
 import android.util.Log
 import com.google.gson.Gson
+import com.novapay.sdk.BuildConfig
 import com.novapay.sdk.domain.exceptions.ExceptionHandler
 import com.novapay.sdk.domain.exceptions.ServerException
 import com.novapay.sdk.domain.interceptors.AuthInterceptor
@@ -38,7 +39,7 @@ class KtorClient {
                 }
 
                 defaultRequest {
-                    host = ""
+                    host = "${BuildConfig.NovaUrl}"
                     url {
 
                         protocol = URLProtocol.HTTPS
@@ -136,6 +137,7 @@ class KtorClient {
                     json(Json {
                         prettyPrint = true
                         isLenient = true
+                        ignoreUnknownKeys = true
                     })
                 }
 

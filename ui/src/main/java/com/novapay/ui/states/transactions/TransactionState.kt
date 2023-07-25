@@ -13,7 +13,8 @@ class TransactionState(
     var metadata: Any? = "",
     var isGenerateTRNContentValid: Boolean = false,
     var trn: String? = null,
-    var validatedCustomer: ValidatedCustomer? = null
+    var validatedCustomer: ValidatedCustomer? = null,
+    var qrCode: String? = null
 
 ) {
     companion object {
@@ -28,6 +29,7 @@ class TransactionState(
         var metadata = state.metadata
         var isGenerateTRNContentValid = state.isGenerateTRNContentValid
         var trn = state.trn
+        var qrCode = state.qrCode
         var validatedCustomer = state.validatedCustomer
 
 
@@ -40,7 +42,8 @@ class TransactionState(
                 metadata,
                 isGenerateTRNContentValid,
                 trn,
-                validatedCustomer
+                validatedCustomer,
+                qrCode
 
             )
         }

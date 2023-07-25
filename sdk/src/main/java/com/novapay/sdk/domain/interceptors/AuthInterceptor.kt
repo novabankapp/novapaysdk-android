@@ -2,50 +2,48 @@ package com.novapay.sdk.domain.interceptors
 
 import android.util.Log
 import com.google.gson.Gson
-import com.novapay.sdk.domain.models.requests.RefreshTokenRequest
+import com.novapay.sdk.BuildConfig
 import com.novapay.sdk.domain.models.responses.RefreshTokenResult
 import com.novapay.sdk.infrastructure.di.Preferences
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
-import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
+import okhttp3.*
+
 
 class AuthInterceptor constructor(private val sharedPrefs: Preferences): Interceptor {
 
     init{
 
     }
-    private fun callApi(originalRequest: Request, jsonData : String, token: String) : Response {
+    private fun callApi(originalRequest: Request) : Response {
 
         val client = OkHttpClient
             .Builder()
             .addInterceptor(RequestInterceptor())
             .build();
 
-        val body = jsonData.toRequestBody("application/json".toMediaTypeOrNull());
+        //val body = jsonData.toRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull());
+        val formBody: RequestBody = FormBody.Builder()
+            .add("client_id",BuildConfig.ClientId )
+            .add("client_secret", BuildConfig.ClientSecret)
+            .add("grant_type",BuildConfig.GrantType)
+            .build()
         val request =  originalRequest.newBuilder()
-            .url("/Token/refresh")
-            .addHeader("Authorization", "Bearer $token")
-            .post(body)
+            .url("${BuildConfig.Protocol}${BuildConfig.NovaUrl}/services/identity/token")
+            //.addHeader("Authorization", "Bearer $token")
+            .post(formBody)
             .build()
         val call = client.newCall(request)
         return call.execute()
 
     }
     private suspend fun refreshToken(chain: Interceptor.Chain,
-                                     initialRequest: Request,
-                                     token: String?,
-                                     refreshToken: String?): Response {
-        if(!token.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
+                                     initialRequest: Request): Response {
+
             try {
-                var refreshRequest = RefreshTokenRequest(token, refreshToken)
+
                 val gson = Gson()
-                var json = gson.toJson(refreshRequest)
-                var response = callApi(initialRequest, json, token)
+                var response = callApi(initialRequest)
                 // make an API call to get new token
                 if (response != null) {
                     val resString = response.body?.string()
@@ -53,13 +51,13 @@ class AuthInterceptor constructor(private val sharedPrefs: Preferences): Interce
                     Log.d("AuthInterceptor", resString.toString())
 
                     var refreshResponse = gson.fromJson(resString, RefreshTokenResult::class.java)
-                    if (!refreshResponse.token.isNullOrEmpty()) {
-                        sharedPrefs.setAuthToken(refreshResponse.token)
-                        sharedPrefs.setRefreshToken(refreshResponse.refreshToken)
-
+                    Log.d("AuthInterceptorResponse", refreshResponse.toString())
+                    if (!refreshResponse.access_token.isNullOrEmpty()) {
+                        sharedPrefs.setAuthToken(refreshResponse.access_token)
+                        Log.d("AuthInterceptorToken", refreshResponse.access_token.toString())
                         val newRequest = initialRequest
                             .newBuilder()
-                            .header("Authorization", "Bearer ${refreshResponse.token}")
+                            .header("Authorization", "Bearer ${refreshResponse.access_token}")
                             .build()
                         return chain.proceed(newRequest)
                     }
@@ -69,34 +67,42 @@ class AuthInterceptor constructor(private val sharedPrefs: Preferences): Interce
             catch(e : Exception){
                 Log.d("AuthInterceptor", e.message.toString())
             }
-        }
+
 
         return chain.proceed(initialRequest)
     }
+    /*private fun addApiKeyInterceptor(okHttpClientBuilder: OkHttpClient.Builder) {
+        okHttpClientBuilder.addInterceptor { chain ->
+            val newRequest = chain
+                .request()
+                .newBuilder()
+                .addHeader(X_API_KEY, "Bearer ${apiKeyProvider.apiKey}").build()
+            chain.proceed(newRequest)
+        }
+    }*/
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking {
             sharedPrefs.accessToken.firstOrNull()
         };
-        val refreshToken = runBlocking {
-            sharedPrefs.refreshToken.firstOrNull()
-        };
+
         val initialRequest = chain.request()
-        if (!token.isNullOrEmpty()) {
+        //if (!token.isNullOrEmpty()) {
             val authRequest = initialRequest
                 .newBuilder()
                 .header("Authorization", "Bearer $token")
                 .build()
             val response = chain.proceed(authRequest)
             if (response.code == 401) {
-                runBlocking { // this: CoroutineScope
+                return runBlocking { // this: CoroutineScope
                     response.close()
-                    return@runBlocking refreshToken(chain, authRequest, token, refreshToken)
+                    return@runBlocking refreshToken(chain, authRequest)
 
                 }
+
             } else {
                 return response
             }
-        }
-        return chain.proceed(initialRequest)
+        //}
+        //return chain.proceed(initialRequest)
     }
 }

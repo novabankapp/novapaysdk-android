@@ -24,7 +24,9 @@ import org.koin.dsl.module
 internal val applicationModule = module {
     single { Preferences(context = androidContext()) }
     single { AuthInterceptor(get()) }
-    single { /*KtorClient.getClient(get())*/ KtorMockClient.ktorHttpClient}
+    single { KtorClient.getClient(get())
+        //KtorMockClient.ktorHttpClient
+    }
     single{ ClientKtorService(get()) }
     single<ClientRemote>{ ClientKtorRemote(get()) }
     single{ TransactionsKtorService(get()) }

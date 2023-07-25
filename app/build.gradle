@@ -64,3 +64,17 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 }
+def NovaUrl = NovaUrl
+def Protocol = Protocol
+def ClientId = ClientId
+def ClientSecret= ClientSecret
+def GrantType= GrantType
+android.buildTypes.each { type ->
+    type.buildConfigField 'String', 'NovaUrl', NovaUrl
+    type.buildConfigField 'String', 'Protocol', Protocol
+    type.buildConfigField 'String', 'ClientId', ClientId
+    type.buildConfigField 'String', 'ClientSecret', ClientSecret
+    type.buildConfigField 'String', 'GrantType', GrantType
+
+
+}

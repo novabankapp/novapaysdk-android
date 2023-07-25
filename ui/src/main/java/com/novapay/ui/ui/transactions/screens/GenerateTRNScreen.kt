@@ -2,19 +2,17 @@ package com.novapay.ui.ui.transactions.screens
 
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -23,7 +21,11 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.novapay.sdk.BuildConfig
 import com.novapay.sdk.platform.Utils
+import com.novapay.ui.R
 import com.novapay.ui.events.transactions.TransactionEvent
 import com.novapay.ui.states.transactions.TransactionState
 import com.novapay.ui.themes.buttonHeight
@@ -102,36 +104,55 @@ private fun generateTRN(
                         )
                         if (state.trn != null) {
                             Log.d("trn", state.trn!!)
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .clip(shape = MaterialTheme.shapes.medium)
-                                    .padding(commonPadding)
-                                    .fillMaxWidth(0.8f)
-                                    .background(MaterialTheme.colors.primary.copy(
-                                        alpha = 0.4f
-                                    ))
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(
-                                    "Your TRN is",
-                                    style = MaterialTheme.typography.caption.copy(
-                                        MaterialTheme.colors.surface,
-                                        fontWeight = FontWeight.Bold
+                                Image(
+                                    painter = rememberAsyncImagePainter(
+                                        ImageRequest.Builder(LocalContext.current)
+                                            .data(data = "${BuildConfig.Protocol}${BuildConfig.NovaUrl}/services/content/${state.qrCode}")
+                                            .apply(block = fun ImageRequest.Builder.() {
+                                                crossfade(true)
+                                            }).placeholder(R.drawable.file).build()
                                     ),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(400.dp)
                                 )
-                                Text(
-                                    state.trn!!,
-                                    textAlign = TextAlign.Start,
-                                    style = MaterialTheme.typography.h5.copy(
-                                        MaterialTheme.colors.surface,
-                                        fontWeight = FontWeight.Bold
-                                    ),
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
-                                        .padding(start = commonPadding)
-                                )
+                                        .clip(shape = MaterialTheme.shapes.medium)
+                                        .padding(commonPadding)
+                                        .fillMaxWidth(0.8f)
+                                        /*.background(
+                                            MaterialTheme.colors.primary.copy(
+                                                alpha = 0.4f
+                                            )
+                                        )*/
+                                ) {
+
+                                    Text(
+                                        "Your TRN is",
+                                        style = MaterialTheme.typography.caption.copy(
+                                            MaterialTheme.colors.primary,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                    )
+                                    Text(
+                                        state.trn!!,
+                                        textAlign = TextAlign.Start,
+                                        style = MaterialTheme.typography.h5.copy(
+                                            MaterialTheme.colors.primary,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        modifier = Modifier
+                                            .padding(start = commonPadding)
+                                    )
+                                }
                             }
                         }
+                        else{
                         Text(
                             "Generate TRN",
                             textAlign = TextAlign.Start,
@@ -169,7 +190,7 @@ private fun generateTRN(
                             placeholder = "Amount",
                             enabled = !state.isLoading,
                             onChange = {
-                                if(Utils.isNumeric(it.text)) {
+                                if (Utils.isNumeric(it.text)) {
                                     if (it.text == "" || it.text == null) {
                                         events(TransactionEvent.ChangeAmount(BigDecimal("0.00")))
                                     } else {
@@ -209,7 +230,7 @@ private fun generateTRN(
 
 
                         )
-
+                    }
                         Spacer(modifier = Modifier.padding(8.dp))
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -234,11 +255,40 @@ private fun generateTRN(
                                 }) {
 
                                 Text(
-                                    "Generate",
+                                    if(state.trn != null) "Regenerate" else "Generate",
                                     color = MaterialTheme.colors.surface
                                 )
 
 
+                            }
+                            if(state.trn != null){
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(
+                                    shape = MaterialTheme.shapes.medium,
+                                    enabled = state.isGenerateTRNContentValid && !state.isLoading,
+                                    colors = ButtonDefaults.buttonColors(
+                                        disabledBackgroundColor = MaterialTheme.colors.onSurface.copy(
+                                            alpha = 0.2f
+                                        ),
+                                        backgroundColor = MaterialTheme.colors.onSurface
+                                    ),
+                                    modifier = Modifier
+                                        .width(screenWidth)
+                                        .height(buttonHeight),
+                                    //.padding(horizontal = 12.dp),
+
+                                    onClick = {
+                                        events(TransactionEvent.Reset)
+
+                                    }) {
+
+                                    Text(
+                                        "Reset",
+                                        color = MaterialTheme.colors.surface
+                                    )
+
+
+                                }
                             }
 
                             Spacer(modifier = Modifier.padding(8.dp))

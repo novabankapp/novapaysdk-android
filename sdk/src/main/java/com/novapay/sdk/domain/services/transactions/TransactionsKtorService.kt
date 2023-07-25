@@ -14,7 +14,7 @@ import io.ktor.http.*
 
 class TransactionsKtorService constructor(private val client: HttpClient) {
     suspend fun validateCustomerRef(customerRef: ValidateCustomerRefRequest): ValidateCustomerResponse {
-        val res : HttpResponse = client.request("Transactions/validateRef") {
+        val res : HttpResponse = client.request("services/requests/transactions/validateRef") {
             method = HttpMethod.Post
             headers {
                 append("Content-Type", "application/json")
@@ -27,7 +27,7 @@ class TransactionsKtorService constructor(private val client: HttpClient) {
     suspend fun generateTRN(request: GenerateTRNRequest): GenerateTRNResponse {
         Log.d("generate on ktor", "Within")
 
-        val res : HttpResponse = client.request("Transactions/GenerateTRN") {
+        val res : HttpResponse = client.request("services/requests/transactions/GenerateTRN") {
             method = HttpMethod.Post
             headers {
                 append("Content-Type", "application/json")

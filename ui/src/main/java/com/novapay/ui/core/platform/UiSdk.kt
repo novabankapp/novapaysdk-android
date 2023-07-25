@@ -32,12 +32,15 @@ interface NovaPayUiSdkProtocol {
         onSuccess: (() -> Unit)?,
         onError: ((Failure) -> Unit)?
     )
-    fun initialize(application: Application, extraModules: List<ExtraModule> = listOf())
+    fun initialize(application: Application,
+                   extraModules: List<ExtraModule> = listOf())
 
     fun setApiKey(apiKey: String, environment: NovaPaySdkEnvironment)
 }
 
 object novaPayUiSdk : NovaPayUiSdkProtocol{
+
+    var OPTIONS : String = "options"
     override fun initializeWithApiKey(
         application: Application,
         apiKey: String,

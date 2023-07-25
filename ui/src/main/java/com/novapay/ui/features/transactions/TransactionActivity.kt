@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.novapay.ui.core.platform.BaseActivity
+import com.novapay.ui.core.platform.novaPayUiSdk
 import com.novapay.ui.events.transactions.TransactionEvent
 import com.novapay.ui.models.transactions.TransactionActivityOptions
 import com.novapay.ui.themes.NovaPayUISdkTheme
@@ -42,7 +43,7 @@ class TransactionActivity : BaseActivity() {
         setContent {
             NovaPayUISdkTheme{
                 val navController = rememberNavController()
-                val options = intent.serializable<TransactionActivityOptions>("options")
+                val options = intent.serializable<TransactionActivityOptions>(novaPayUiSdk.OPTIONS)
                 if(options != null){
                     val events = transactionViewModel::handleTransactionEvent
                     events(
@@ -83,7 +84,7 @@ class TransactionActivity : BaseActivity() {
 
             val intent = Intent(from, TransactionActivity::class.java)
             if (options != null) {
-                intent.putExtra("options", options)
+                intent.putExtra( novaPayUiSdk.OPTIONS, options)
 
             }
             return intent

@@ -18,7 +18,7 @@ object MerchantMockResponse {
                 name = "Water"
             ),
             merchantConfig =  MerchantConfig(
-                hasValidation = true
+                validationConfig = null
             )
         )
         return Gson().toJson(obj)

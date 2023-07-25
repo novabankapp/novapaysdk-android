@@ -28,6 +28,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.novapay.novapaysdk.ui.theme.NovaPaySdkTheme
 import com.novapay.ui.core.platform.novaPayUiSdk
+import com.novapay.ui.features.transactions.TransactionActivity
 import com.novapay.ui.models.transactions.TransactionActivityOptions
 import java.math.BigDecimal
 
@@ -113,14 +114,18 @@ fun Greeting(name: String,
                 ),
             )
             Button(onClick = {
-                novaPayUiSdk.startGenerateTRNFlow(
+                /*novaPayUiSdk.startGenerateTRNFlow(
                     context as Activity,
                     onError = { Log.i("here", "error") },
                     onSuccess = { Log.i("here", "success") },
                     options = TransactionActivityOptions("123455555", BigDecimal("1200000.00")),
                     resultCode = null,
                     activityResultLauncher = activityResultLauncher
-                )
+                )*/
+                var options = TransactionActivityOptions("123455555", BigDecimal("1200000.00"))
+                val intent = Intent(context as Activity, TransactionActivity::class.java)
+                intent.putExtra(novaPayUiSdk.OPTIONS, options);
+                activityResultLauncher?.launch(intent)
             }) {
                 Text(text = "Generate Invoice for $name!")
             }

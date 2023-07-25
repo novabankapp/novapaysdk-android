@@ -22,7 +22,7 @@ import java.math.BigDecimal
     init{
         viewModelScope.launch {
             val exists = protocol.validateApiKey(apiKeyProvider.apiKey)
-            merchant = protocol.getMerchant(apiKeyProvider.apiKey)
+            merchant = ApiKeyProvider.merchant
         }
     }
     private val _uiState = MutableStateFlow(TransactionState())
@@ -43,6 +43,10 @@ import java.math.BigDecimal
                 }
                 is TransactionEvent.ChangeMetadata -> {
                     metadata = event.metaData
+                }
+                TransactionEvent.Reset -> {
+                    trn = null
+                    qrCode = null
                 }
                 TransactionEvent.Generate -> {
                     loading = true
@@ -83,7 +87,8 @@ import java.math.BigDecimal
 
                     _uiState.value = uiState.value.build {
                         loading = false
-                        trn = res
+                        trn = res?.trn
+                        qrCode = res?.qrCode
                         errorMessage = null
                     }
                     Log.d("generate", "within ${uiState.value.isLoading}")

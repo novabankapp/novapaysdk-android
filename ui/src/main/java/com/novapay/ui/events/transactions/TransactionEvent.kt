@@ -6,6 +6,8 @@ import java.math.BigDecimal
 
 sealed class TransactionEvent {
     object Generate : TransactionEvent()
+
+    object Reset : TransactionEvent()
     object ValidateCustomerRef : TransactionEvent()
 
     data class LoadOptions(val options: TransactionActivityOptions) : TransactionEvent()
